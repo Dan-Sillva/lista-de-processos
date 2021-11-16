@@ -57,6 +57,9 @@ void finalizarProcesso();
 void compararProcesso(Processo *pAtual, Processo *pAnterior, int pid);
 void finalizarProcessoEspecifico(int PID);
 
+void printProcesso(Processo *processo);
+void printLista(Lista *lista);
+
 // ---> variaveis globais
 Lista *listaPrioridade = (Lista *)malloc(sizeof(Lista));
 Lista *listaComum = (Lista *)malloc(sizeof(Lista));
@@ -65,15 +68,37 @@ int id_list = 0;
 
 int main() // MAIN-----------------------------------------------------------------
 {
-
     listaPrioridade->inicio = NULL;
     listaComum->inicio = NULL;
 
-    //printf("tudo ok\n");
-    //Processo *p = criarProcesso("teste");
-    //printf("--p nome: %s", p->nome);
+    // criei o main de maneira a testar as funções do programa, sem uma interface bem definida
+    // por isso a execução de cada  função será dada de acordo com o que estiver colocado
+    // diretamente no main
 
-    finalizarProcessoEspecifico(2);
+    printf("tudo ok\n");
+    Processo *p1 = criarProcesso("teste1");
+    Processo *p2 = criarProcesso("teste2");
+    Processo *p3 = criarProcesso("teste3");
+    Processo *p4 = criarProcesso("teste4");
+    Processo *p5 = criarProcesso("teste5");
+
+    Processo *p6 = criarProcesso("prioridade1");
+    Processo *p7 = criarProcesso("prioridade2");
+    Processo *p8 = criarProcesso("prioridade3");
+
+    adicionarProcesso(p1);
+    adicionarProcesso(p2);
+    adicionarProcesso(p3);
+    adicionarProcesso(p4);
+    adicionarProcesso(p5);
+
+    adicionarProcesso(p6, true);
+    adicionarProcesso(p7, true);
+    adicionarProcesso(p8, true);
+
+    printLista(listaComum);
+    printf("---------------------------------");
+    printLista(listaPrioridade);
 }
 
 Processo *criarProcesso(char nome[200])
@@ -91,9 +116,9 @@ void adicionarProcesso(Processo *processo, bool prioridade)
 {
     Processo *novoProcesso = processo;
 
-    if (prioridade)
+    if (prioridade == true)
     {
-        if (listaPrioridade->inicio != NULL)
+        if (listaPrioridade->inicio == NULL)
         {
             listaPrioridade->inicio = novoProcesso;
         }
@@ -109,7 +134,7 @@ void adicionarProcesso(Processo *processo, bool prioridade)
     }
     else
     {
-        if (listaComum->inicio != NULL)
+        if (listaComum->inicio == NULL)
         {
             listaComum->inicio = novoProcesso;
         }
@@ -129,7 +154,7 @@ void adicionarProcesso(Processo *processo)
 {
     Processo *novoProcesso = processo;
 
-    if (listaComum->inicio != NULL)
+    if (listaComum->inicio == NULL)
     {
         listaComum->inicio = novoProcesso;
     }
@@ -261,3 +286,24 @@ void finalizarProcessoEspecifico(int PID)
         printf("\nERRO: nao foi possivel finalizar o processo(01)\n(01: sem processos existentes)"); //listas vazias
     }
 };
+
+void printProcesso(Processo *processo)
+{
+    Processo *p = processo;
+    printf("\nProcesso: %s", p->nome);
+    printf("\nPID: %d", p->PID);
+    printf("\n\n");
+};
+
+void printLista(Lista *lista)
+{
+    Processo *auxProcesso = lista->inicio;
+
+    while (auxProcesso->proximo != NULL)
+    {
+        printProcesso(auxProcesso);
+        auxProcesso = auxProcesso->proximo;
+    }
+
+    printProcesso(auxProcesso);
+}
